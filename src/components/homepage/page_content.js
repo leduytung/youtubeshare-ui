@@ -1,7 +1,7 @@
 import React from 'react';
 import { DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled } from '@ant-design/icons';
 import { Layout, List, Avatar, Space } from 'antd';
-import movieApi from '../../api/movieApi';
+import movie_api from '../../api/movie_api';
 
 const { Content } = Layout;
 
@@ -19,9 +19,8 @@ class PageContent extends React.Component {
   }
 
   loadPage(pageCount) {
-    movieApi.getAll({page: pageCount}).then(res => {
+    movie_api.getAll({page: pageCount}).then(res => {
       this.setState({movies: res.data.movies})
-
     });
   }
 
