@@ -1,79 +1,102 @@
-import { MessageOutlined, LikeOutlined, StarOutlined } from '@ant-design/icons';
-import React, { useState, useEffect } from 'react';
-import { Layout } from 'antd';
-
-import { List, Avatar, Space } from 'antd';
+import React from 'react';
+import { DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled } from '@ant-design/icons';
+import { Layout, List, Avatar, Space } from 'antd';
+import movieApi from '../../api/movieApi';
 
 const { Content } = Layout;
 
+class PageContent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+    this.state = {
+      movies: [],
+      reactions: []
+    };
+  }
+  handleClick() {
+    console.log('Click happened');
+  }
 
-function PageContent() {
-  const listData = [];
-  for (let i = 0; i < 23; i++) {
-    listData.push({
-      href: 'https://ant.design',
-      title: `ant design part ${i}`,
-      avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-      description:
-        'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-      content:
-        'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+  loadPage(pageCount) {
+    movieApi.getAll({page: pageCount}).then(res => {
+      this.setState({movies: res.data.movies})
+
     });
   }
 
-  const IconText = ({ icon, text }) => (
-    <Space>
-      {React.createElement(icon)}
-      {text}
-    </Space>
-  );
+  componentDidMount() {
+    this.loadPage();
+  }
 
-
-  return (
-    <Content style={{ padding: '0 50px' }}>
-      <List
-    itemLayout="vertical"
-    size="large"
-    pagination={{
-      onChange: page => {
-        console.log(page);
-      },
-      pageSize: 3,
-    }}
-    dataSource={listData}
-    footer={
-      <div>
-        <b>ant design</b> footer part
-      </div>
+  render() {
+    const {movies} = this.state;
+    const listData = [];
+    for (let i = 0; i < movies.length; i++) {
+      let movie = movies[i]
+      listData.push({
+        href: 'https://ant.design',
+        title: movie.title,
+        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+        description: `Shared by: ${'aasdasd@ghmail.com'}`,
+        content: movie.description,
+        upvote: movie.upvote,
+        downvote: movie.downvote
+      });
     }
-    renderItem={item => (
-      <List.Item
-        key={item.title}
-        actions={[
-          <IconText icon={StarOutlined} text="156" key="list-vertical-star-o" />,
-          <IconText icon={LikeOutlined} text="156" key="list-vertical-like-o" />,
-          <IconText icon={MessageOutlined} text="2" key="list-vertical-message" />,
-        ]}
-        extra={
-          <img
-            width={272}
-            alt="logo"
-            src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-          />
-        }
-      >
-        <List.Item.Meta
-          avatar={<Avatar src={item.avatar} />}
-          title={<a href={item.href}>{item.title}</a>}
-          description={item.description}
-        />
-        {item.content}
-      </List.Item>
-    )}
-  />
 
-    </Content>
-  );
+    const IconText = ({ icon, text }) => (
+      <Space>
+        {React.createElement(icon)}
+        {text}
+      </Space>
+    );
+
+    return (
+      <Content style={{ padding: '0 50px' }}>
+        <List
+          style={{ padding: '50px 10px 20px 50px' }}
+          itemLayout="vertical"
+          size="small"
+          pagination={{
+            onChange: page => {
+              this.loadPage(page);
+            },
+            showSizeChanger: false,
+            pageSize: 10,
+            total: 170,
+          }}
+          dataSource={listData}
+          renderItem={item => (
+            <List.Item
+              key={item.title}
+              actions={[
+                <IconText icon={DislikeOutlined} text={`${item.upvote}`} key="list-vertical-dislike-o" />,
+                <IconText icon={LikeOutlined} text={`${item.downvote}`} key="list-vertical-like-o" />,
+
+                <IconText icon={DislikeFilled} text={`${item.upvote}`} key="list-vertical-dislike-o" />,
+                <IconText icon={LikeFilled} text={`${item.downvote}`} key="list-vertical-like-o" />,
+              ]}
+              extra={
+                <img
+                  width={272}
+                  alt="logo"
+                  src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+                />
+              }
+            >
+              <List.Item.Meta
+                avatar={<Avatar src={item.avatar} />}
+                title={<a href={item.href}>{item.title}</a>}
+                description={item.description}
+              />
+              {item.content}
+            </List.Item>
+          )}
+        />
+      </Content>
+    );
+  }
 }
 
 export default PageContent;

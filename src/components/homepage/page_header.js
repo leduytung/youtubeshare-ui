@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Form, Button } from 'antd';
 import { Layout, Menu, Col, Row } from 'antd';
 
 const { Header } = Layout;
 
 function PageHeader() {
-  const [form] = Form.useForm();
+  // const [form] = Form.useForm();
   const [, forceUpdate] = useState();
 
   // To disable submit button at the beginning.
@@ -14,9 +13,9 @@ function PageHeader() {
     forceUpdate({});
   }, []);
 
-  const onFinish = values => {
-    console.log('Finish:', values);
-  };
+  // const onFinish = values => {
+  //   console.log('Finish:', values);
+  // };
 
   return (
     <Header>
