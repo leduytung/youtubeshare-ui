@@ -1,7 +1,7 @@
 import AxiosClient from './axios_client';
 
 class MovieApi {
-  getAll = (params) => {
+  getAll(params) {
     const url = 'public/v1/movies';
     return AxiosClient.get(url, { params });
   };

@@ -1,6 +1,5 @@
 import React from 'react';
-import { DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled } from '@ant-design/icons';
-import { Layout, List, Avatar, Space } from 'antd';
+import { Layout, Form, List, Icon } from 'antd';
 import movie_api from '../../api/movie_api';
 
 const { Content } = Layout;
@@ -8,14 +7,10 @@ const { Content } = Layout;
 class PageContent extends React.Component {
   constructor(props) {
     super(props);
-    this.handleClick = this.handleClick.bind(this);
     this.state = {
       movies: [],
       reactions: []
     };
-  }
-  handleClick() {
-    console.log('Click happened');
   }
 
   loadPage(pageCount) {
@@ -29,6 +24,13 @@ class PageContent extends React.Component {
   }
 
   render() {
+    const IconText = ({ type, text, theme }) => (
+      <span>
+        <Icon type={type} theme={theme} style={{ marginRight: 8 }} />
+        {text}
+      </span>
+    );
+
     const {movies} = this.state;
     const listData = [];
     for (let i = 0; i < movies.length; i++) {
@@ -39,18 +41,10 @@ class PageContent extends React.Component {
         avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
         description: `Shared by: ${'aasdasd@ghmail.com'}`,
         content: movie.description,
-        upvote: movie.upvote,
-        downvote: movie.downvote
+        like: movie.like,
+        dislike: movie.dislike
       });
     }
-
-    const IconText = ({ icon, text }) => (
-      <Space>
-        {React.createElement(icon)}
-        {text}
-      </Space>
-    );
-
     return (
       <Content style={{ padding: '0 50px' }}>
         <List
@@ -69,23 +63,22 @@ class PageContent extends React.Component {
           renderItem={item => (
             <List.Item
               key={item.title}
-              actions={[
-                <IconText icon={DislikeOutlined} text={`${item.upvote}`} key="list-vertical-dislike-o" />,
-                <IconText icon={LikeOutlined} text={`${item.downvote}`} key="list-vertical-like-o" />,
-
-                <IconText icon={DislikeFilled} text={`${item.upvote}`} key="list-vertical-dislike-o" />,
-                <IconText icon={LikeFilled} text={`${item.downvote}`} key="list-vertical-like-o" />,
+              actions={false && [
+                <IconText type="like" text={`${item.dislike}`} key="list-vertical-star-o" />,
+                <IconText type="dislike" text={`${item.like}`} key="list-vertical-like-o" />,
+                
+                // <IconText type="like" text={`${item.dislike}`} theme="filled" key="list-vertical-star-o" />,
+                // <IconText type="dislike" text={`${item.dislike}`} theme="filled" key="list-vertical-like-o" />
               ]}
               extra={
                 <img
-                  width={272}
+                  width={400}
                   alt="logo"
                   src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
                 />
               }
             >
               <List.Item.Meta
-                avatar={<Avatar src={item.avatar} />}
                 title={<a href={item.href}>{item.title}</a>}
                 description={item.description}
               />
@@ -98,4 +91,4 @@ class PageContent extends React.Component {
   }
 }
 
-export default PageContent;
+export default Form.create()(PageContent);
