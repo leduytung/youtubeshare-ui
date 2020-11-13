@@ -14,7 +14,8 @@ class PageContent extends React.Component {
   }
 
   loadPage(pageCount) {
-    movie_api.getAll({page: pageCount}).then(res => {
+    const {signed_in} = this.props
+    movie_api.getAllMovies({page: pageCount}, signed_in).then(res => {
       this.setState({movies: res.data.movies})
     });
   }
@@ -30,7 +31,7 @@ class PageContent extends React.Component {
         {text}
       </span>
     );
-
+    const {signed_in} = this.props
     const {movies} = this.state;
     const listData = [];
     for (let i = 0; i < movies.length; i++) {
@@ -63,7 +64,7 @@ class PageContent extends React.Component {
           renderItem={item => (
             <List.Item
               key={item.title}
-              actions={false && [
+              actions={signed_in && [
                 <IconText type="like" text={`${item.dislike}`} key="list-vertical-star-o" />,
                 <IconText type="dislike" text={`${item.like}`} key="list-vertical-like-o" />,
                 

@@ -21,13 +21,13 @@ class Homepage extends React.Component {
   }
 
   signOut() {
-    user_api.sign_out()
+    user_api.sign_out();
     this.setState({"user": null, "signed_in": false})
   }
 
   componentDidMount() {
     user_api.verify_token().then(data => {
-      this.setState({"user": data["user"], "signed_in": data["signed_in"]})
+      this.setState(data)
     });
   }
 
@@ -36,12 +36,13 @@ class Homepage extends React.Component {
       <Layout className="layout">
         <PageHeader
           {...this.state}
-          isSignedIn={this.isSignedIn}
           signOut={this.signOut}
           signIn={this.signIn}
           currentUser={this.currentUser}
         />
-        <PageContent />
+        <PageContent 
+          {...this.state}
+        />
         {/* <PageFooter signed_in={this.signed_in}/> */}
       </Layout>
     );

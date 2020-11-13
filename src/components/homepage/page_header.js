@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Icon, Input, Button ,Row, Col, Menu, Layout } from 'antd';
+import { Form, Icon, Input, Button ,Row, Col, Menu, Layout, message } from 'antd';
 import user_api from '../../api/user_api';
 
 const { Header } = Layout;
@@ -15,7 +15,12 @@ class PageHeader extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         user_api.sign_in(values).then(res => {
-          this.props.signIn(res);
+          if (res.status === true) {
+            message.success('Signed in successfully');
+            this.props.signIn(res.user);
+          } else {
+            message.error('Sign in failed');
+          }
         });
       }
     });
@@ -24,12 +29,12 @@ class PageHeader extends React.Component {
   logout = e => {
     e.preventDefault();
     this.props.signOut();
+    message.success('Signed out successfully');
   };
 
   render() {
     const {signed_in, user} = this.props
-    console.log(user)
-    const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+    const { getFieldDecorator, getFieldError, isFieldTouched } = this.props.form;
 
     const emailError = isFieldTouched('email') && getFieldError('email');
     const passwordError = isFieldTouched('password') && getFieldError('password');
@@ -85,7 +90,7 @@ class PageHeader extends React.Component {
                   style={{height: '64px', paddingTop: '11px'}} 
                   key="1"
                 >
-                  Wellcome {this.props.user["email"]}
+                  Wellcome {user["email"]}
                 </Menu.Item>
               </Menu>
             </Col>
