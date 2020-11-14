@@ -1,7 +1,7 @@
 import React from 'react';
 import { List, message, Button } from 'antd';
 import reactionApi from '../../../api/reaction_api';
-
+import ReactPlayer from "react-player"
 
 const LIKE = 1;
 const DISLIKE = 0;
@@ -77,13 +77,12 @@ class ListMovies extends React.Component {
       let movie = movies[i]
       listData.push({
         id: movie.id,
-        href: 'https://ant.design',
         title: movie.title,
-        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
         description: `Shared by: ${authors && authors[movie.user_id]}`,
         content: movie.description,
         like: movie.like,
-        dislike: movie.dislike
+        dislike: movie.dislike,
+        url: movie.url
       });
     }
     return (
@@ -108,10 +107,10 @@ class ListMovies extends React.Component {
                 this.iconText(DISLIKE, item.id, "dislike")
               ]}
               extra={
-                <img
-                  width={400}
-                  alt="logo"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+                <ReactPlayer
+                  width={500}
+                  height={200}
+                  url={item.url}
                 />
               }
             >
