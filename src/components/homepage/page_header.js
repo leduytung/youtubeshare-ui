@@ -1,20 +1,21 @@
 import React from 'react';
 import { Form, Icon, Input, Button ,Row, Col, Menu, Layout, message } from 'antd';
-import user_api from '../../api/user_api';
+import authApi from '../../api/auth_api';
 
 const { Header } = Layout;
 
 class PageHeader extends React.Component {
-
-  componentDidMount() {
-    this.props.form.validateFields();
+  constructor(props) {
+    super(props);
+    this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
-  handleSubmit = e => {
+  login(e) {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        user_api.sign_in(values).then(res => {
+        authApi.signIn(values).then(res => {
           if (res.status === true) {
             message.success('Signed in successfully');
             this.props.signIn(res.user);
@@ -26,7 +27,11 @@ class PageHeader extends React.Component {
     });
   };
 
-  logout = e => {
+  componentDidMount() {
+    this.props.form.validateFields();
+  }
+
+  logout(e) {
     e.preventDefault();
     this.props.signOut();
     message.success('Signed out successfully');
@@ -51,7 +56,7 @@ class PageHeader extends React.Component {
             <Form 
               layout="inline"
               style={{ padding: '15px' , float: 'right'}}
-              onSubmit={this.handleSubmit}>
+              onSubmit={this.login}>
               <Form.Item validateStatus={emailError ? 'error' : ''} help={emailError || ''}>
                 {getFieldDecorator('email', {
                   rules: [{ required: true, message: ' ' }],

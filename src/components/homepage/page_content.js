@@ -1,23 +1,59 @@
 import React from 'react';
-import { Layout, Form, List, Icon } from 'antd';
-import movie_api from '../../api/movie_api';
+import ListMovies from './contents/list_movies';
+import { Layout} from 'antd';
+import movieApi from '../../api/movie_api';
+import userApi from '../../api/user_api';
+import reactionApi from '../../api/reaction_api';
 
 const { Content } = Layout;
 
 class PageContent extends React.Component {
   constructor(props) {
     super(props);
+    this.loadPage = this.loadPage.bind(this);
+    this.setReactions = this.setReactions.bind(this);
+    this.setReactCount = this.setReactCount.bind(this);
     this.state = {
       movies: [],
-      reactions: []
+      authors: {},
+      reactions: {},
+      likeCount: {},
+      dislikeCount: {}
     };
   }
 
   loadPage(pageCount) {
-    const {signed_in} = this.props
-    movie_api.getAllMovies({page: pageCount}, signed_in).then(res => {
-      this.setState({movies: res.data.movies})
+    movieApi.getAllMovies({page: pageCount}).then(res => {
+      // Set movies
+      let movies = res.data.movies;
+      this.setState({movies: movies});
+      
+      // Set like count
+      let hash_like = {}
+      let hash_dislike = {}
+      movies.map(mv => hash_like[mv.id] = mv.like);
+      movies.map(mv => hash_dislike[mv.id] = mv.dislike);
+      this.setState({likeCount: hash_like, dislikeCount: hash_dislike});
+      // Set reactions
+      let movie_ids = movies.map(mv => mv.id);
+      reactionApi.getReactions({movie_ids: movie_ids}).then(res => {
+        this.setState({reactions: res.reactions});
+      });
+
+      // Set authors
+      let author_ids = movies.map(mv => mv.user_id);
+      userApi.getUserEmails({user_ids: author_ids}).then(res => {
+        this.setState({authors: res.emails});
+      });
     });
+  }
+
+  setReactions(reactions) {
+    this.setState({reactions: reactions});
+  }
+
+  setReactCount(likeCount, dislikeCount) {
+    this.setState({likeCount: likeCount, dislikeCount: dislikeCount});
   }
 
   componentDidMount() {
@@ -25,71 +61,19 @@ class PageContent extends React.Component {
   }
 
   render() {
-    const IconText = ({ type, text, theme }) => (
-      <span>
-        <Icon type={type} theme={theme} style={{ marginRight: 8 }} />
-        {text}
-      </span>
-    );
-    const {signed_in} = this.props
-    const {movies} = this.state;
-    const listData = [];
-    for (let i = 0; i < movies.length; i++) {
-      let movie = movies[i]
-      listData.push({
-        href: 'https://ant.design',
-        title: movie.title,
-        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-        description: `Shared by: ${'aasdasd@ghmail.com'}`,
-        content: movie.description,
-        like: movie.like,
-        dislike: movie.dislike
-      });
-    }
     return (
-      <Content style={{ padding: '0 50px' }}>
-        <List
-          style={{ padding: '50px 10px 20px 50px' }}
-          itemLayout="vertical"
-          size="small"
-          pagination={{
-            onChange: page => {
-              this.loadPage(page);
-            },
-            showSizeChanger: false,
-            pageSize: 10,
-            total: 170,
-          }}
-          dataSource={listData}
-          renderItem={item => (
-            <List.Item
-              key={item.title}
-              actions={signed_in && [
-                <IconText type="like" text={`${item.dislike}`} key="list-vertical-star-o" />,
-                <IconText type="dislike" text={`${item.like}`} key="list-vertical-like-o" />,
-                
-                // <IconText type="like" text={`${item.dislike}`} theme="filled" key="list-vertical-star-o" />,
-                // <IconText type="dislike" text={`${item.dislike}`} theme="filled" key="list-vertical-like-o" />
-              ]}
-              extra={
-                <img
-                  width={400}
-                  alt="logo"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                />
-              }
-            >
-              <List.Item.Meta
-                title={<a href={item.href}>{item.title}</a>}
-                description={item.description}
-              />
-              {item.content}
-            </List.Item>
-          )}
+      <Content
+        style={{ padding: '0 50px' }}
+      >
+        <ListMovies
+          {...this.state}
+          {...this.props}
+          setReactions={this.setReactions}
+          setReactCount={this.setReactCount}
         />
       </Content>
     );
   }
 }
 
-export default Form.create()(PageContent);
+export default PageContent;
