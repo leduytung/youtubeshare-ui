@@ -19,9 +19,9 @@ class ListMovies extends React.Component {
     let dislikeCount = this.props.dislikeCount;
     if (react_type == LIKE) {
       likeCount[movie_id] = likeCount[movie_id] + 1;
-      dislikeCount[movie_id] = dislikeCount[movie_id] - 1;
+      dislikeCount[movie_id] > 0 && (dislikeCount[movie_id] = dislikeCount[movie_id] - 1);
     } else {
-      likeCount[movie_id] = likeCount[movie_id] - 1;
+      likeCount[movie_id] > 0 && (likeCount[movie_id] = likeCount[movie_id] - 1);
       dislikeCount[movie_id] = dislikeCount[movie_id] + 1;
     }
 
@@ -51,8 +51,8 @@ class ListMovies extends React.Component {
 
   iconText(react_type, item_id, type) {
     return (
-      <span onClick={this.react} item_id={item_id} react_type={react_type} >
-        <Button 
+      this.props.reactions && <span onClick={this.react} item_id={item_id} react_type={react_type} >
+        <Button
           disabled={react_type == this.props.reactions[item_id]}
           ghost={true}
           type={type}
@@ -63,8 +63,7 @@ class ListMovies extends React.Component {
           shape="round"
           size="small">
         { 
-          `${react_type == LIKE && this.props.likeCount[item_id] ||
-          react_type == DISLIKE && this.props.dislikeCount[item_id]}`
+          `${react_type == LIKE ? this.props.likeCount[item_id] : this.props.dislikeCount[item_id]}`
         }
         </Button>
       </span>
@@ -94,7 +93,7 @@ class ListMovies extends React.Component {
           size="small"
           pagination={{
             onChange: page => {
-              this.loadPage(page);
+              this.props.loadPage(page);
             },
             showSizeChanger: false,
             pageSize: 10,
