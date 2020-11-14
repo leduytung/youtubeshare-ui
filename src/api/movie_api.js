@@ -1,11 +1,12 @@
 import AxiosClient from './axios_client';
 
 class MovieApi {
-  getAllMovies(params, signed_in) {
-    const url = signed_in ? 'public/v1/movies' : 'secure/v1/movies';
+  getAllMovies(params) {
+    let token = localStorage.getItem('FUNNY_MOVIE_TOKEN')
+    const url = token ? 'secure/v1/movies' : 'public/v1/movies';
     return AxiosClient.get(url, { params });
   };
 }
 
-const movie_api = new MovieApi();
-export default movie_api;
+const movieApi = new MovieApi();
+export default movieApi;

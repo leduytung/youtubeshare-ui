@@ -3,7 +3,7 @@ import { Layout } from 'antd';
 import PageHeader from './page_header';
 import PageContent from './page_content';
 // import PageFooter from './page_footer';
-import user_api from '../../api/user_api';
+import authApi from '../../api/auth_api';
 
 class Homepage extends React.Component {
   constructor(props) {
@@ -21,12 +21,12 @@ class Homepage extends React.Component {
   }
 
   signOut() {
-    user_api.sign_out();
+    authApi.signOut();
     this.setState({"user": null, "signed_in": false})
   }
 
   componentDidMount() {
-    user_api.verify_token().then(data => {
+    authApi.verifyToken().then(data => {
       this.setState(data)
     });
   }
@@ -38,7 +38,6 @@ class Homepage extends React.Component {
           {...this.state}
           signOut={this.signOut}
           signIn={this.signIn}
-          currentUser={this.currentUser}
         />
         <PageContent 
           {...this.state}
