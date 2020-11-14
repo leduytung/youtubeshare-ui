@@ -1,6 +1,6 @@
 import AxiosClient from './axios_client';
-
 class AuthApi {
+
   signIn(params) {
     const url = 'public/v1/auth/sign_in';
     return AxiosClient.post(url, params).then(res => {

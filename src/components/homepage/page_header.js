@@ -1,6 +1,5 @@
 import React from 'react';
 import { Form, Icon, Input, Button ,Row, Col, Menu, Layout, message } from 'antd';
-import authApi from '../../api/auth_api';
 
 const { Header } = Layout;
 
@@ -15,14 +14,7 @@ class PageHeader extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        authApi.signIn(values).then(res => {
-          if (res.status === true) {
-            message.success('Signed in successfully');
-            this.props.signIn(res.user);
-          } else {
-            message.error('Sign in failed');
-          }
-        });
+        this.props.signIn(values);
       }
     });
   };
@@ -57,7 +49,7 @@ class PageHeader extends React.Component {
               layout="inline"
               style={{ padding: '15px' , float: 'right'}}
               onSubmit={this.login}>
-              <Form.Item validateStatus={emailError ? 'error' : ''} help={emailError || ''}>
+              <Form.Item validateStatus={emailError ? 'error' : ''}>
                 {getFieldDecorator('email', {
                   rules: [{ required: true, message: ' ' }],
                 })(
@@ -67,7 +59,7 @@ class PageHeader extends React.Component {
                   />,
                 )}
               </Form.Item>
-              <Form.Item validateStatus={passwordError ? 'error' : ''} help={passwordError || ''}>
+              <Form.Item validateStatus={passwordError ? 'error' : ''}>
                 {getFieldDecorator('password', {
                   rules: [{ required: true, message: ' ' }],
                 })(
@@ -102,7 +94,7 @@ class PageHeader extends React.Component {
             <Col span={12}>
               <Button
                 type="primary"
-                htmlType="submit"
+                onClick={this.props.showModal}
                 style={{ margin: '15px' , float: 'right'}}
               >
                 Share a movie
@@ -110,7 +102,6 @@ class PageHeader extends React.Component {
     
               <Button
                 type="primary"
-                htmlType="submit"
                 onClick={this.logout}
                 style={{ margin: '15px' , float: 'right'}}
               >
