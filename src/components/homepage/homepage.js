@@ -20,6 +20,7 @@ class Homepage extends React.Component {
     this.setReactions = this.setReactions.bind(this);
     this.setReactCount = this.setReactCount.bind(this);
     this.state = {
+      loading: true,
       currentPage: 0,
       user: null,
       signed_in: false,
@@ -61,7 +62,7 @@ class Homepage extends React.Component {
     movieApi.getAllMovies({page: pageCount}).then(res => {
       // Set movies
       let movies = res.data.movies;
-      this.setState({movies: movies});
+      this.setState({movies: movies, loading: false});
       // Set current page
       pageCount && this.setState({currentPage: pageCount})
       
