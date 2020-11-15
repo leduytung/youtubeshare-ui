@@ -91,6 +91,7 @@ class ListMovies extends React.Component {
           style={{ padding: '50px 10px 20px 50px' }}
           itemLayout="vertical"
           size="small"
+          loading={this.props.loading}
           pagination={{
             onChange: page => {
               this.props.loadPage(page);
