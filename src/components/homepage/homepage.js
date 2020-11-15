@@ -3,7 +3,7 @@ import { Layout, message} from 'antd';
 import PageHeader from './page_header';
 import PageContent from './page_content';
 import ModalCreateMovie from './contents/modal_create_movie';
-// import PageFooter from './page_footer';
+import PageFooter from './page_footer';
 import authApi from '../../api/auth_api';
 import movieApi from '../../api/movie_api';
 import userApi from '../../api/user_api';
@@ -122,7 +122,7 @@ class Homepage extends React.Component {
           hideModal={this.hideModal}
           loadPage={this.loadPage}
         />
-        {/* <PageFooter signed_in={this.signed_in}/> */}
+        <PageFooter signed_in={this.signed_in}/>
       </Layout>
     );
   }
