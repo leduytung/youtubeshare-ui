@@ -55,7 +55,7 @@ class PageHeader extends React.Component {
                 })(
                   <Input
                     prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    placeholder="email"
+                    placeholder="Email"
                   />,
                 )}
               </Form.Item>
@@ -72,7 +72,7 @@ class PageHeader extends React.Component {
               </Form.Item>
               <Form.Item>
                 <Button type="primary" htmlType="submit">
-                  Log in
+                  Log in / Sign up
                 </Button>
               </Form.Item>
             </Form>
@@ -99,7 +99,6 @@ class PageHeader extends React.Component {
               >
                 Share a movie
               </Button>
-    
               <Button
                 type="primary"
                 onClick={this.logout}
@@ -113,7 +112,6 @@ class PageHeader extends React.Component {
       </Header>
     );
   }
-  
 }
 
 export default Form.create()(PageHeader);
