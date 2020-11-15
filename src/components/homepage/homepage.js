@@ -20,6 +20,7 @@ class Homepage extends React.Component {
     this.setReactions = this.setReactions.bind(this);
     this.setReactCount = this.setReactCount.bind(this);
     this.state = {
+      currentPage: 0,
       user: null,
       signed_in: false,
       createMovieModal: false,
@@ -55,12 +56,14 @@ class Homepage extends React.Component {
   hideModal() {
     this.setState({"createMovieModal": false})
   }
-  //////////////////////////////////
+
   loadPage(pageCount) {
     movieApi.getAllMovies({page: pageCount}).then(res => {
       // Set movies
       let movies = res.data.movies;
       this.setState({movies: movies});
+      // Set current page
+      pageCount && this.setState({currentPage: pageCount})
       
       // Set like count
       let hash_like = {}

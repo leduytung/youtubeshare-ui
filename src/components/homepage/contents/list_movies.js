@@ -14,14 +14,14 @@ class ListMovies extends React.Component {
     this.iconText = this.iconText.bind(this);
   }
 
-  updateReactCount(movie_id, react_type){
+  updateReactCount(movie_id, react_type, first_time){
     let likeCount = this.props.likeCount;
     let dislikeCount = this.props.dislikeCount;
     if (react_type == LIKE) {
       likeCount[movie_id] = likeCount[movie_id] + 1;
-      dislikeCount[movie_id] > 0 && (dislikeCount[movie_id] = dislikeCount[movie_id] - 1);
+      dislikeCount[movie_id] > 0 && !first_time && (dislikeCount[movie_id] = dislikeCount[movie_id] - 1);
     } else {
-      likeCount[movie_id] > 0 && (likeCount[movie_id] = likeCount[movie_id] - 1);
+      likeCount[movie_id] > 0 && !first_time && (likeCount[movie_id] = likeCount[movie_id] - 1);
       dislikeCount[movie_id] = dislikeCount[movie_id] + 1;
     }
 
@@ -37,9 +37,10 @@ class ListMovies extends React.Component {
       react_type: react_type
     }
     let reactions = this.props.reactions
+    let first_time = reactions[movie_id] ? false : true
     reactions[movie_id] = react_type
     this.props.setReactions(reactions);
-    this.updateReactCount(movie_id, react_type)
+    this.updateReactCount(movie_id, react_type, first_time)
     reactionApi.react(params).then(res => {
       if (res.status) {
         message.success('React Sent!');
@@ -71,7 +72,7 @@ class ListMovies extends React.Component {
   }
 
   render() {
-    const {movies, signed_in, authors} = this.props
+    const {movies, signed_in, authors, currentPage} = this.props
     const listData = [];
     for (let i = 0; i < movies.length; i++) {
       let movie = movies[i]
@@ -95,8 +96,8 @@ class ListMovies extends React.Component {
               this.props.loadPage(page);
             },
             showSizeChanger: false,
-            pageSize: 10,
-            total: 170,
+            pageSize: 5,
+            total: (currentPage + 5) * 5,
           }}
           dataSource={listData}
           renderItem={item => (
